@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_loader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:src="@mipmap/ic_launcher" />
+
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/tv_url"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/hint_url" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_display"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/display_image" />
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
