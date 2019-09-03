@@ -11,11 +11,6 @@ import android.widget.Toast;
 import com.mrzhang.imageloader.ImageLoader;
 import com.mrzhang.imageloader.R;
 import com.mrzhang.imageloader.cache.DiskCache;
-import com.mrzhang.imageloader.cache.DoubleCache;
-import com.mrzhang.imageloader.cache.ImageCache;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -9,10 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.mrzhang.ImageLoaderApplication;
-import com.mrzhang.imageloader.cache.DiskCache;
-import com.mrzhang.imageloader.cache.DoubleCache;
 import com.mrzhang.imageloader.cache.ImageCache;
-import com.mrzhang.imageloader.cache.MemoryCache;
 
 import java.net.URL;
 import java.util.concurrent.ExecutorService;

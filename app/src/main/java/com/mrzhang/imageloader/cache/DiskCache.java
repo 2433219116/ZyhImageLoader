@@ -10,7 +10,6 @@ import com.mrzhang.utils.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by zyhang on 2019/9/3
@@ -23,7 +22,7 @@ public class DiskCache implements ImageCache {
     private static String cacheDir;
 
     public DiskCache() {
-        cacheDir = FileUtils.getSDCachePath() + "/";
+        cacheDir = FileUtils.getSDCachePath() + File.separator;
         Log.d(TAG, cacheDir);
     }
 
@@ -53,6 +52,6 @@ public class DiskCache implements ImageCache {
      * 文件名中不允许存在/，全部替换才可以存储
      */
     private String getUrl(String url) {
-        return url.replaceAll("/", "-");
+        return url.replaceAll(File.separator, "-");
     }
 }
