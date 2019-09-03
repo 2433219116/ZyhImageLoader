@@ -31,6 +31,11 @@ public class DiskCache implements ImageCache {
     }
 
     public void put(String url, Bitmap bitmap) {
+        //清除缓存后，cache文件夹也会被清理掉
+        if (!new File(FileUtils.getSDCachePath()).exists()) {
+            FileUtils.createMkdir(cacheDir);
+        }
+
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(new File(cacheDir + getUrl(url)));
@@ -49,7 +54,10 @@ public class DiskCache implements ImageCache {
         }
     }
 
-    private String getUrl(String url){
-        return url.replaceAll("/","-");
+    /**
+     * 文件名中不允许存在/，全部替换才可以存储
+     */
+    private String getUrl(String url) {
+        return url.replaceAll("/", "-");
     }
 }

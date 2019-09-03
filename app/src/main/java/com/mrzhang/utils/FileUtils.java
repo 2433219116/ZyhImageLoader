@@ -44,30 +44,25 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件的路径及文件
+     * 创建文件夹的路径
+     *
+     * @param path 路径
      */
-
-    public static String createMkdirsAndFiles(String path, String filename) {
+    public static void createMkdir(String path) {
         if (TextUtils.isEmpty(path)) {
             throw new RuntimeException("路径为空");
         }
         File file = new File(path);
-        if (!file.exists()) {
+
+        if (!file.exists() || !file.isDirectory()) {
             try {
                 file.mkdirs();
+
             } catch (Exception e) {
                 throw new RuntimeException("创建文件夹不成功");
             }
         }
-        File f = new File(file, filename);
-        if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException("创建文件不成功");
-            }
-        }
-        return f.getAbsolutePath();
+
     }
 
 }
