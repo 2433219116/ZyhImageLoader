@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.mrzhang.utils.CloseUtils;
 import com.mrzhang.utils.FileUtils;
 
 import java.io.File;
@@ -44,13 +45,7 @@ public class DiskCache implements ImageCache {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            CloseUtils.closeQuietly(fileOutputStream);
         }
     }
 
