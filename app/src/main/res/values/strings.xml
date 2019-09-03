@@ -2,4 +2,5 @@
     <string name="app_name">ImageLoader</string>
     <string name="hint_url">请输入要显示的图片地址</string>
     <string name="display_image">显示图片</string>
+    <string name="clear_edit">清除输入</string>
 </resources>

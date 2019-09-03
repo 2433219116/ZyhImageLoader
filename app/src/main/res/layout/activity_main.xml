@@ -9,9 +9,9 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.LinearLayoutCompat
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatImageView
@@ -24,17 +24,32 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/tv_url"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
+                android:gravity="center"
                 android:hint="@string/hint_url" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_display"
-                android:layout_width="100dp"
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/display_image" />
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_display"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/display_image" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_clear"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clear_edit" />
+
+            </LinearLayout>
+
         </android.support.v7.widget.LinearLayoutCompat>
     </android.support.v4.widget.NestedScrollView>
 </LinearLayout>
