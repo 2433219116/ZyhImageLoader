@@ -1,14 +1,18 @@
-package com.mrzhang.imageloader;
+package com.mrzhang.activity;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.Toast;
+
+import com.mrzhang.imageloader.ImageLoader;
+import com.mrzhang.imageloader.R;
+import com.mrzhang.imageloader.cache.DiskCache;
+import com.mrzhang.imageloader.cache.DoubleCache;
+import com.mrzhang.imageloader.cache.ImageCache;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     AppCompatEditText mEvUrl;
     String mGetUrl;
     String nativeUrl = "https://i1.go2yd.com/image.php?url=0JkUDu6Qar";
+    ImageLoader mImageLoader;
 
     @Override
 
@@ -39,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+        mImageLoader=new ImageLoader();
+        mImageLoader.setImageCache(new DiskCache());
+
         mBtnDisplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,22 +57,12 @@ public class MainActivity extends AppCompatActivity {
                 mGetUrl = mEvUrl.getText().toString().trim();
                 if (mGetUrl.isEmpty()) {
                     Toast.makeText(MainActivity.this, "显示默认Url", Toast.LENGTH_SHORT).show();
-                    ImageLoader loader = new ImageLoader();
                     // loader.displayImage(url, mImgLoader);
-                    loader.displayImage(nativeUrl, mImgLoader);
+                    mImageLoader.displayImage(nativeUrl, mImgLoader);
                 } else {
-                    try {
-                        new URL(mGetUrl);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                        Toast.makeText(MainActivity.this, "Url error", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
                     Toast.makeText(MainActivity.this, "显示填充Url", Toast.LENGTH_SHORT).show();
-                    ImageLoader loader = new ImageLoader();
                     // loader.displayImage(url, mImgLoader);
-                    loader.displayImage(mGetUrl, mImgLoader);
+                    mImageLoader.displayImage(mGetUrl, mImgLoader);
                 }
             }
         });

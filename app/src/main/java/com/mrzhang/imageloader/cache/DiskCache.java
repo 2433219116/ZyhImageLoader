@@ -2,7 +2,11 @@ package com.mrzhang.imageloader.cache;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
+import com.mrzhang.utils.FileUtils;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,17 +16,24 @@ import java.io.IOException;
  * <p>
  * Description:
  */
-public class DiskCache {
-    private static String cacheDir = "sdcard/cache/";
+public class DiskCache implements ImageCache {
+    private String TAG = DiskCache.class.getSimpleName();
+
+    private static String cacheDir;
+
+    public DiskCache() {
+        cacheDir = FileUtils.getSDCachePath() + "/";
+        Log.d(TAG, cacheDir);
+    }
 
     public Bitmap get(String url) {
-        return BitmapFactory.decodeFile(cacheDir + url);
+        return BitmapFactory.decodeFile(cacheDir + getUrl(url));
     }
 
     public void put(String url, Bitmap bitmap) {
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(cacheDir + url);
+            fileOutputStream = new FileOutputStream(new File(cacheDir + getUrl(url)));
             //图片压缩 100 是不压缩  30 是压缩70%
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
         } catch (FileNotFoundException e) {
@@ -36,5 +47,9 @@ public class DiskCache {
                 }
             }
         }
+    }
+
+    private String getUrl(String url){
+        return url.replaceAll("/","-");
     }
 }
