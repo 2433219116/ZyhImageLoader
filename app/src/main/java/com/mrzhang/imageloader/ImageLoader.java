@@ -5,8 +5,11 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.util.LruCache;
 import android.widget.ImageView;
+
+import com.mrzhang.imageloader.cache.DiskCache;
+import com.mrzhang.imageloader.cache.DoubleCache;
+import com.mrzhang.imageloader.cache.MemoryCache;
 
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -15,44 +18,52 @@ import java.util.concurrent.Executors;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * PROJECT_NAME：AndroidStudioProjects
- * PACKAGE_NAME：com.mrzhang.imageloader
  * CLASS_NAME：ImageLoader
  * AUTHOR：efan.zyhang
- * CREATE_TIME：2018/10/8 14:03
- * DESCRIPTION： 图片缓存
  */
+
 public class ImageLoader {
 
-    ImageCache mImageCache=new ImageCache();
+    private MemoryCache mMemoryCache = new MemoryCache();
+    private DiskCache mDiskCache = new DiskCache();
+    private DoubleCache mDoubleCache = new DoubleCache();
+
+    private boolean isUseDiskCache = false;
+    private boolean isUseDoubleCache = false;
 
     //线程池、线程数量为CPU数量
     //可重用固定数量线程池
     //线程池处理形式好处是 系统空闲时可插入辅助线程，保持cpu繁忙，保持线程数目
-    ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService mExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     //UI handler
-    Handler mUIHandler = new Handler(Looper.getMainLooper());
+    private Handler mUIHandler = new Handler(Looper.getMainLooper());
 
 
-    public ImageLoader() {
-        initImageLoader();
+    public void useDiskCache(boolean useDiskCache) {
+        isUseDiskCache = useDiskCache;
     }
 
-    /**
-     * 初始化工作
-     */
-    private void initImageLoader() {
-
+    public void useDoubleCache(boolean useDoubleCache) {
+        isUseDoubleCache = useDoubleCache;
     }
 
     /**
      * 显示图片
-     *
-     * @param url       下载地址
-     * @param imageView 图片地址
      */
     public void displayImage(final String url, final ImageView imageView) {
+        Bitmap bitmap = getBitmap(url);
+
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+            return;
+        }
+        
+        submitExecutor(url, imageView);
+
+    }
+
+    private void submitExecutor(final String url, final ImageView imageView) {
         imageView.setTag(url);
 
         //线程池提交
@@ -69,17 +80,36 @@ public class ImageLoader {
                     updateImageView(imageView, bitmap);
                     Log.e("app", "ok");
                 }
-                //存入内存缓存
-                mImageCache.put(url, bitmap);
+
+                putBitmap(bitmap, url);
             }
         });
     }
 
+    private void putBitmap(Bitmap bitmap, String url) {
+        if (isUseDoubleCache) {
+            mDoubleCache.put(url, bitmap);
+        } else if (isUseDiskCache) {
+            mDiskCache.put(url, bitmap);
+        } else {
+            mMemoryCache.put(url, bitmap);
+        }
+    }
+
+    private Bitmap getBitmap(String url) {
+        Bitmap bitmap = null;
+        if (isUseDoubleCache) {
+            bitmap = mDoubleCache.get(url);
+        } else if (isUseDiskCache) {
+            bitmap = mDiskCache.get(url);
+        } else {
+            bitmap = mMemoryCache.get(url);
+        }
+        return bitmap;
+    }
+
     /**
-     * 传入url，下载图片
-     *
-     * @param imageUrl 图片地址
-     * @return Bitmap 图片资源
+     * 下载图片
      */
     private Bitmap downLoadImage(String imageUrl) {
         Bitmap bitmap = null;
@@ -96,9 +126,6 @@ public class ImageLoader {
 
     /**
      * 更新UI
-     *
-     * @param imageView 更新图片位置
-     * @param bitmap    图片资源
      */
     private void updateImageView(final ImageView imageView, final Bitmap bitmap) {
         mUIHandler.post(new Runnable() {

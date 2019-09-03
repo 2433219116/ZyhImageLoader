@@ -1,4 +1,4 @@
-package com.mrzhang.imageloader;
+package com.mrzhang.imageloader.cache;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;
@@ -8,11 +8,11 @@ import android.util.LruCache;
  * <p>
  * Description:
  */
-public class ImageCache {
+public class MemoryCache {
     //图片内存缓存
     private LruCache<String, Bitmap> mImageCache;
 
-    public ImageCache() {
+    public MemoryCache() {
         initImageCache();
     }
 
