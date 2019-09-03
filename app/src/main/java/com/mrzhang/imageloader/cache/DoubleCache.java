@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  * <p>
  * Description:
  */
-public class DoubleCache {
+public class DoubleCache implements ImageCache{
 
     private MemoryCache mMemoryCache = new MemoryCache();
     private DiskCache mDiskCache = new DiskCache();

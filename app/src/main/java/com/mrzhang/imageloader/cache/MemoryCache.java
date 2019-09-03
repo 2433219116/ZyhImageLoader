@@ -8,7 +8,7 @@ import android.util.LruCache;
  * <p>
  * Description:
  */
-public class MemoryCache {
+public class MemoryCache implements ImageCache{
     //图片内存缓存
     private LruCache<String, Bitmap> mImageCache;
 

@@ -6,9 +6,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.mrzhang.ImageLoaderApplication;
 import com.mrzhang.imageloader.cache.DiskCache;
 import com.mrzhang.imageloader.cache.DoubleCache;
+import com.mrzhang.imageloader.cache.ImageCache;
 import com.mrzhang.imageloader.cache.MemoryCache;
 
 import java.net.URL;
@@ -24,12 +27,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ImageLoader {
 
-    private MemoryCache mMemoryCache = new MemoryCache();
-    private DiskCache mDiskCache = new DiskCache();
-    private DoubleCache mDoubleCache = new DoubleCache();
-
-    private boolean isUseDiskCache = false;
-    private boolean isUseDoubleCache = false;
+    private ImageCache mImageCache;
 
     //线程池、线程数量为CPU数量
     //可重用固定数量线程池
@@ -39,26 +37,21 @@ public class ImageLoader {
     //UI handler
     private Handler mUIHandler = new Handler(Looper.getMainLooper());
 
-
-    public void useDiskCache(boolean useDiskCache) {
-        isUseDiskCache = useDiskCache;
-    }
-
-    public void useDoubleCache(boolean useDoubleCache) {
-        isUseDoubleCache = useDoubleCache;
+    public void setImageCache(ImageCache imageCache) {
+        mImageCache = imageCache;
     }
 
     /**
      * 显示图片
      */
     public void displayImage(final String url, final ImageView imageView) {
-        Bitmap bitmap = getBitmap(url);
+        Bitmap bitmap = mImageCache.get(url);
 
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
             return;
         }
-        
+
         submitExecutor(url, imageView);
 
     }
@@ -81,31 +74,9 @@ public class ImageLoader {
                     Log.e("app", "ok");
                 }
 
-                putBitmap(bitmap, url);
+                mImageCache.put(url, bitmap);
             }
         });
-    }
-
-    private void putBitmap(Bitmap bitmap, String url) {
-        if (isUseDoubleCache) {
-            mDoubleCache.put(url, bitmap);
-        } else if (isUseDiskCache) {
-            mDiskCache.put(url, bitmap);
-        } else {
-            mMemoryCache.put(url, bitmap);
-        }
-    }
-
-    private Bitmap getBitmap(String url) {
-        Bitmap bitmap = null;
-        if (isUseDoubleCache) {
-            bitmap = mDoubleCache.get(url);
-        } else if (isUseDiskCache) {
-            bitmap = mDiskCache.get(url);
-        } else {
-            bitmap = mMemoryCache.get(url);
-        }
-        return bitmap;
     }
 
     /**
@@ -119,6 +90,7 @@ public class ImageLoader {
             bitmap = BitmapFactory.decodeStream(connection.getInputStream());
             connection.disconnect();
         } catch (Exception e) {
+            Toast.makeText(ImageLoaderApplication.getInstance(), e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
         return bitmap;
