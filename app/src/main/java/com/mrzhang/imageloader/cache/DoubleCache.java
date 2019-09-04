@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  * <p>
  * Description:
  */
-public class DoubleCache implements ImageCache{
+public class DoubleCache implements ImageCache {
 
     private MemoryCache mMemoryCache = new MemoryCache();
     private DiskCache mDiskCache = new DiskCache();
@@ -23,5 +23,11 @@ public class DoubleCache implements ImageCache{
     public void put(String url, Bitmap bitmap) {
         mMemoryCache.put(url, bitmap);
         mDiskCache.put(url, bitmap);
+    }
+
+    @Override
+    public void delete() {
+        mMemoryCache.delete();
+        mDiskCache.delete();
     }
 }

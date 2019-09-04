@@ -3,6 +3,8 @@ package com.mrzhang.imageloader.cache;
 import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import java.util.Map;
+
 /**
  * Created by zyhang on 2019/9/3
  * <p>
@@ -38,5 +40,10 @@ public class MemoryCache implements ImageCache{
 
     public void put(String url, Bitmap bitmap) {
         mImageCache.put(url, bitmap);
+    }
+
+    @Override
+    public void delete() {
+        mImageCache.evictAll();
     }
 }

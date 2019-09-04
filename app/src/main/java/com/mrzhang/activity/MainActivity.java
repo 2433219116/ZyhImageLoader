@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.mrzhang.imageloader.ImageLoader;
 import com.mrzhang.imageloader.R;
 import com.mrzhang.imageloader.cache.DiskCache;
+import com.mrzhang.imageloader.cache.ZDiskLruCache;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initListener() {
         mImageLoader=new ImageLoader();
-        mImageLoader.setImageCache(new DiskCache());
+        mImageLoader.setImageCache(new ZDiskLruCache());
 
         mBtnDisplay.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -22,23 +22,24 @@ public class DiskCache implements ImageCache {
     private static String cacheDir;
 
     public DiskCache() {
-        cacheDir = FileUtils.getSDCachePath() + File.separator;
+        cacheDir = FileUtils.getSDCachePath("bitmap") + File.separator;
         Log.d(TAG, cacheDir);
     }
 
     public Bitmap get(String url) {
-        return BitmapFactory.decodeFile(cacheDir + getUrl(url));
+        return BitmapFactory.decodeFile(cacheDir + FileUtils.getHashKeyByMD5(url));
     }
 
     public void put(String url, Bitmap bitmap) {
-        //清除缓存后，cache文件夹也会被清理掉
-        if (!new File(FileUtils.getSDCachePath()).exists()) {
-            FileUtils.createMkdir(cacheDir);
+        File file = new File(FileUtils.getSDCachePath("bitmap"));
+
+        if (!file.exists()) {
+            file.mkdirs();
         }
 
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(new File(cacheDir + getUrl(url)));
+            fileOutputStream = new FileOutputStream(new File(cacheDir + FileUtils.getHashKeyByMD5(url)));
             //图片压缩 100 是不压缩  30 是压缩70%
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
         } catch (FileNotFoundException e) {
@@ -48,10 +49,12 @@ public class DiskCache implements ImageCache {
         }
     }
 
-    /**
-     * 文件名中不允许存在/，全部替换才可以存储
-     */
-    private String getUrl(String url) {
-        return url.replaceAll(File.separator, "-");
+    @Override
+    public void delete() {
+        File[] files = new File(FileUtils.getSDCachePath("bitmap")).listFiles();
+        for (File file : files) {
+            if (file.exists())
+                file.delete();
+        }
     }
 }

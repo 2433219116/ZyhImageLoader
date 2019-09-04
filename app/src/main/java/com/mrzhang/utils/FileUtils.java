@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import com.mrzhang.ImageLoaderApplication;
 
 import java.io.File;
-import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by zyhang on 2019/9/3
@@ -34,13 +35,17 @@ public class FileUtils {
         return "";
     }
 
-    public static String getSDCachePath() {
+
+    public static String getSDCachePath(String uniqueName) {
+        String cachePath = null;
         if (isSDCardMounted()) {
             if (ImageLoaderApplication.getInstance().getExternalCacheDir() != null) {
-                return ImageLoaderApplication.getInstance().getExternalCacheDir().getAbsolutePath();
+                cachePath = ImageLoaderApplication.getInstance().getExternalCacheDir().getPath();
             }
+        } else {
+            cachePath = ImageLoaderApplication.getInstance().getCacheDir().getPath();
         }
-        return "";
+        return cachePath + File.separator + uniqueName;
     }
 
     /**
@@ -63,6 +68,34 @@ public class FileUtils {
             }
         }
 
+    }
+
+    /**
+     * md5编码
+     * 因为图片URL中可能包含一些特殊字符，这些字符有可能在命名文件时是不合法的
+     */
+    public static String getHashKeyByMD5(String key) {
+        String cacheKey;
+        try {
+            final MessageDigest mDigest = MessageDigest.getInstance("MD5");
+            mDigest.update(key.getBytes());
+            cacheKey = bytesToHexString(mDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            cacheKey = String.valueOf(key.hashCode());
+        }
+        return cacheKey;
+    }
+
+    private static String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
     }
 
 }
