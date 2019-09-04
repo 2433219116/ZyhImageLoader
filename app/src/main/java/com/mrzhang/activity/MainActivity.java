@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.mrzhang.imageloader.ImageLoader;
 import com.mrzhang.imageloader.R;
-import com.mrzhang.imageloader.cache.DiskCache;
 import com.mrzhang.imageloader.cache.ZDiskLruCache;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     AppCompatEditText mEvUrl;
     String mGetUrl;
     String nativeUrl = "https://i1.go2yd.com/image.php?url=0JkUDu6Qar";
-    ImageLoader mImageLoader;
 
     @Override
 
@@ -40,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        mImageLoader=new ImageLoader();
-        mImageLoader.setImageCache(new ZDiskLruCache());
+        ImageLoader.getInstance().setImageCache(new ZDiskLruCache());
 
         mBtnDisplay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
                 if (mGetUrl.isEmpty()) {
                     Toast.makeText(MainActivity.this, "显示默认Url", Toast.LENGTH_SHORT).show();
                     // loader.displayImage(url, mImgLoader);
-                    mImageLoader.displayImage(nativeUrl, mImgLoader);
+                    ImageLoader.getInstance().displayImage(nativeUrl, mImgLoader);
                 } else {
                     Toast.makeText(MainActivity.this, "显示填充Url", Toast.LENGTH_SHORT).show();
                     // loader.displayImage(url, mImgLoader);
-                    mImageLoader.displayImage(mGetUrl, mImgLoader);
+                    ImageLoader.getInstance().displayImage(mGetUrl, mImgLoader);
                 }
             }
         });

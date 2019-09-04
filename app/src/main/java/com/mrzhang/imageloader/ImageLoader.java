@@ -34,6 +34,18 @@ public class ImageLoader {
     //UI handler
     private Handler mUIHandler = new Handler(Looper.getMainLooper());
 
+    private ImageLoader() {
+
+    }
+
+    private static class LoaderHolder {
+        private static ImageLoader Instance = new ImageLoader();
+    }
+
+    public static ImageLoader getInstance() {
+        return LoaderHolder.Instance;
+    }
+
     public void setImageCache(ImageCache imageCache) {
         mImageCache = imageCache;
     }
